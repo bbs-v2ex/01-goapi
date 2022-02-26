@@ -32,15 +32,4 @@ func main() {
 	//启动http 服务器
 	http.ListenAndServe(":1234", nil)
 
-	//http.ListenAndServe()
-	//listener, _ := http.("tcp", ":1234")
-	//
-	////注册处理逻辑
-	//_ = rpc.RegisterName("HelloService", &HelloService{})
-	//
-	////启动服务
-	//for {
-	//	conn, _ := listener.Accept() //当链接进来时
-	//	rpc.ServeCodec(jsonrpc.NewServerCodec(conn))
-	//}
 }

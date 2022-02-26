@@ -1,0 +1,13 @@
+syntax = "proto3";
+option go_package = ".;proto";
+//grpc 接口
+service Greeter {
+  //方法
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+message HelloRequest {
+  string  name = 1;
+}
+message HelloReply {
+  string message = 1;
+}
