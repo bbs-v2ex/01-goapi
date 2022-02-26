@@ -4,3 +4,4 @@
 /006_grpc_go_2/proto/helloworld.pb.go
 /007_grpc_stream/proto/stream.pb.go
 *.pb.go
+*.pb.**.go
