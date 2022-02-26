@@ -1,0 +1,9 @@
+syntax = "proto3"; //必须写
+import "google/protobuf/timestamp.proto";
+option go_package = ".;proto"; //生成的包名 前面那个是路径
+//                   "common/proto/v1;proto";
+
+message Hello{
+  map <string,string> mp = 1;
+  google.protobuf.Timestamp addTime = 5;
+}

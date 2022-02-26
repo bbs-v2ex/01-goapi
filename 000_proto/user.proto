@@ -1,0 +1,7 @@
+syntax = "proto3"; //必须写
+option go_package = ".;proto"; //生成的包名 前面那个是路径
+
+message User{
+  string Age = 1;
+  string Name = 2;
+}
