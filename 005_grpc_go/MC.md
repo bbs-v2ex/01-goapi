@@ -82,3 +82,113 @@ func main() {
 ![image-20220226164808672](https://gitee.com/ASeditor_admin/typora_img/raw/master/img/image-20220226164808672.png)
 
 对比之下, prptocol 相对于 json 拥有更高的压缩比,数据更小
+
+### 一元调用
+
+Protocol
+
+```protobuf
+syntax = "proto3";
+//生成文件的 go 的包名称
+option go_package = ".;proto";
+//grpc 接口
+service Greeter {
+  //方法
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+message HelloRequest {
+  string  name = 1;
+}
+message HelloReply {
+  string message = 1;
+}
+```
+
+server
+
+```go
+package main
+
+import (
+	"context"
+	"net"
+
+	"google.golang.org/grpc"
+
+	"n01/006_grpc_go_2/proto"
+)
+
+type Server struct {
+}
+
+func (s *Server) SayHello(ctx context.Context, request *proto.HelloRequest) (*proto.HelloReply, error) {
+	return &proto.HelloReply{
+		Message: "hello " + request.Name,
+	}, nil
+}
+
+func main() {
+	//实例化 grpc
+	g := grpc.NewServer()
+	proto.RegisterGreeterServer(g, &Server{})
+	//启动服务
+	listener, err := net.Listen("tcp", "0.0.0.0:8080")
+	if err != nil {
+		panic(err)
+	}
+	err = g.Serve(listener)
+	if err != nil {
+		panic(err)
+	}
+}
+
+```
+
+client
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	"n01/006_grpc_go_2/proto"
+)
+
+func main() {
+	//conn, _ := grpc.Dial("localhost:8080", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+	c := proto.NewGreeterClient(conn)
+	r, err := c.SayHello(context.Background(), &proto.HelloRequest{Name: "bobby"})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(r)
+
+}
+
+```
+
+![image-20220226175126481](https://gitee.com/ASeditor_admin/typora_img/raw/master/img/image-20220226175126481.png)
+
+### 流模式
+
+可以源源不断的传输数据,适合传输一系大数据,适合B/C长时间连接
+
+![image-20220226175422780](https://gitee.com/ASeditor_admin/typora_img/raw/master/img/image-20220226175422780.png)
+
+![image-20220226175457160](https://gitee.com/ASeditor_admin/typora_img/raw/master/img/image-20220226175457160.png)
+
+![image-20220226175508145](https://gitee.com/ASeditor_admin/typora_img/raw/master/img/image-20220226175508145.png)
+
+![image-20220226175656952](https://gitee.com/ASeditor_admin/typora_img/raw/master/img/image-20220226175656952.png)
+
+![image-20220226175741678](https://gitee.com/ASeditor_admin/typora_img/raw/master/img/image-20220226175741678.png)
